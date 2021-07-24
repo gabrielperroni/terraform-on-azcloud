@@ -4,17 +4,17 @@ provider "azurerm" {
 }
 
 resource "azurerm_linux_virtual_machine_scale_set" "deployment" {
-  name                = "buildagent-vmss-lx"
+  name                = "buildagent-linux-vmss"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Standard_DS2_v2"
-  instances           = 2 #var.numberOfWorkerNodes # number of instances
+  instances           = 1 #var.numberOfWorkerNodes # number of instances
 
   overprovision          = false
   single_placement_group = false
 
   admin_username = "adminuser"
-  admin_password = "@@cfchildren2121"
+  admin_password = "@@cfchildren2121" #azure.vault
 
   disable_password_authentication = false
 
@@ -23,7 +23,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "deployment" {
   source_image_reference {
     publisher = "canonical"
     offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts-gen2"
+    sku       = "20_04-lts"
     version   = "latest"
   }
 
@@ -37,11 +37,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "deployment" {
   }
 
   network_interface {
-    name    = "buildagent-vmss-nic" #${local.prefix}-vmss-nic"
+    name    = "buildagent-linux-nic" #${local.prefix}-vmss-nic"
     primary = true
 
     ip_configuration {
-      name      = "buildagent-vmss-ipconfig" #"${local.prefix}-vmss-"
+      name      = "buildagent-linux-ipconfig" #"${local.prefix}-vmss-"
       primary   = true
       subnet_id = data.azurerm_subnet.subnet.id
     }
